@@ -8,5 +8,5 @@ use Illuminate\Foundation\Auth\User;
 
 class Challenge extends Model
 {
-    protected $fillable = ['name', 'email', 'image_path'];
+    protected $fillable = ['title', 'description', 'difficulty', 'user_id'];
 }

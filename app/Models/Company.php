@@ -8,5 +8,5 @@ use Illuminate\Foundation\Auth\User;
 
 class Company extends Model
 {   
-    protected $fillable = ['name', 'image_path', 'location', 'industry', 'user_id'];
+    protected $fillable = ['name', 'location', 'industry', 'user_id'];
 }

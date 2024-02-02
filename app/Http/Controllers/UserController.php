@@ -11,38 +11,54 @@ use GuzzleHttp\Exception\RequestException;
 use OpenAI;
 
 class UserController extends Controller
-{
-    public function index()
-    {
-        
-        // Obtener todos los usuarios de la base de datos
-        $users = User::all();
-    
-        // Consumir la API externa de GPT para cada usuario
-        foreach ($users as $user) {
-            // Generar un título para el desafío
-            $title = $this->generateTitleFromGPT($user);
-    
-            // Generar una descripción para el desafío
-            $description = $this->generateDescriptionFromGPT($user);
-    
-            // Actualizar el usuario con el título y la descripción generados
-            $user->title = $title;
-            $user->description = $description;
-            $user->save();
-        }
-    
-        // Devolver los usuarios
-        return $users;
-    }
 
+
+{
+
+    public function indexAll(){
+
+        $response = User::all();
+        return $response;
+    }
+    
+
+    public function indexMail()
+    {
+        $response = User::select('id', 'name', 'email')->get()->toArray();
+        $emails = [];
+        foreach ($response as $item) {
+            // Agrega cada correo electrónico al array $emails
+            $details[] = [
+                'id' => $item['id'],
+                'email' => $item['email']
+            ];
+        }
+
+        return $details;
+    }
 
 
     public function chat(Request $request)
     {
-        $message = 'Creame un json que contenga los datos de 5 personas, esos datos son nombre, apellido y numero de documento, los datos de cada persona deben ser siempre diferentes. Todo en formato JSON.';
+        //Se consultan los usuarios y correos existentes en BD
+        $valores = $this->indexMail();
+
+        $emails = [];
+
+        foreach ($valores as $item) {
+            $emails[] = $item['email'];
+            $id_user[] = $item['id'];
+        }
+
+        $correos = implode(', ', $emails);
+
+        if(empty($correos)){
+            $correos = 'admin@gmail.com';
+        }
+        //Se formula la pregunta para insertar los correos y nombre de usuarios y que no se repitan
+        $message = "¿Puedes generar 4 correos electrónicos que no sean repetidos y que no incluyan el correo ".$correos." y 4 nombres, Todo en formato JSON que toda la respuesta este dentro de personas[]";
+
         $response = $this->GPT($message);
-        // print_r($response);
         // Accede a la propiedad "choices" del objeto de respuesta
         $choices = $response->choices;
 
@@ -60,16 +76,20 @@ class UserController extends Controller
                 if (property_exists($jsonText, 'personas')) {
                     // Accede a la lista de personas
                     $personas = $jsonText->personas;
-
                     // Accede a cada persona en el array
                     foreach ($personas as $persona) {
                         // Accede a los atributos de cada persona
                         $nombre = $persona->nombre;
-                        $apellido = $persona->apellido;
-                        $numero_documento = $persona->numero_documento;
+                        $correo = $persona->correo;
+
+                        $user = new User();
+                        $user->name = $nombre;
+                        $user->email = $correo;
+                        $user->save();
 
                         // Haz lo que necesites con la información de cada persona
-                        echo "Nombre: $nombre, Apellido: $apellido, Número de documento: $numero_documento\n";
+                        echo "Se inserto de forma exitosa a la BD ";
+                        echo "Nombre: $nombre, Correo: $correo\n";
                     }
                 } else {
                     echo "El JSON no tiene la propiedad 'personas'.\n";
@@ -80,6 +100,9 @@ class UserController extends Controller
         } else {
             echo "No hay opciones disponibles en la respuesta.\n";
         }
+
+        /** Seguidamente se hace la insercion en la tabla de companies */
+        
     }
 
 

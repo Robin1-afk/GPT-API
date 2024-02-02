@@ -18,9 +18,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/user', [UserController::class, 'chat']);
-Route::get('/user1', [ChallengerController::class, 'index']);
-Route::get('/user2', [CompanyController::class, 'index']);
-Route::get('/user3', [ProgramController::class, 'index']);
+Route::get('/createUserGPT', [UserController::class, 'chat']);
+
+Route::get('/createProgramGPT', [ProgramController::class, 'chat']);
+
+Route::get('/createChallengeGPT', [ChallengerController::class, 'chat']);
+
+Route::get('/createCompanieGPT', [CompanyController::class, 'chat']);
+
+
+Route::get('/userConsult', [UserController::class, 'indexAll']);
+Route::get('/companyConsult', [CompanyController::class, 'indexAll']);
+Route::get('/programConsult', [ProgramController::class, 'indexAll']);
+Route::get('/challengeConsult', [ChallengerController::class, 'indexAll']);
+
 
 

@@ -18,18 +18,34 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+/////////// INSERT DB ////////////
+
+/*Insertar 4 Usuarios de manera automatica con GPT*/
 Route::get('/createUserGPT', [UserController::class, 'chat']);
 
+/*Insertar 4 Programas y programs prarcipants de manera automatica con GPT*/
 Route::get('/createProgramGPT', [ProgramController::class, 'chat']);
 
+/*Insertar 4 Challenger de manera automatica con GPT*/
 Route::get('/createChallengeGPT', [ChallengerController::class, 'chat']);
 
+/*Insertar 4 Companie de manera automatica con GPT*/
 Route::get('/createCompanieGPT', [CompanyController::class, 'chat']);
 
 
+///////// CONSULT DB ///////////
+
+/*Consultar usuarios*/
 Route::get('/userConsult', [UserController::class, 'indexAll']);
+
+/*Consultar compañias*/
 Route::get('/companyConsult', [CompanyController::class, 'indexAll']);
+
+/*Consultar programas*/
 Route::get('/programConsult', [ProgramController::class, 'indexAll']);
+
+/*Consultar challenge*/
 Route::get('/challengeConsult', [ChallengerController::class, 'indexAll']);
 
 
